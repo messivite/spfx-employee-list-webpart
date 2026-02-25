@@ -58,7 +58,7 @@ export function EmployeeCards(props: EmployeeCardsProps): React.ReactElement {
   const [profilePhoto, setProfilePhoto] = React.useState<string | undefined>(undefined);
   const userInfoMapRef = React.useRef<Record<string, UserInfo>>({});
 
-  /* ── data fetch ── */
+  // Veri çekme işlemleri
   React.useEffect(() => {
     if (!getAccessToken || !spHttpClient || !webAbsoluteUrl) {
       setLoading(false);
@@ -114,7 +114,7 @@ export function EmployeeCards(props: EmployeeCardsProps): React.ReactElement {
               const photoUrl = accountName
                 ? `${rootOrigin}/_layouts/15/userphoto.aspx?size=M&accountname=${encodeURIComponent(accountName)}`
                 : undefined;
-              // Debug: hangi kullanıcı için hangi fotoğraf URL'si üretildi?
+              // Konsola oluşturulan fotoğraf url'sini loglayalım
               // eslint-disable-next-line no-console
               console.log('[EmployeeCards] list user photo', {
                 lid,
@@ -155,13 +155,13 @@ export function EmployeeCards(props: EmployeeCardsProps): React.ReactElement {
       .then(() => setLoading(false), () => setLoading(false));
   }, [listId, recordCount, spHttpClient, webAbsoluteUrl, resolvedListId, getAccessToken]);
 
-  /* ── helpers ── */
+  // Yardımcı Fonksiyonlar
   const getName = (item: EmployeeItem): string => String(item.fields.personDisplayName ?? `ID: ${item.id}`);
   const getEmail = (item: EmployeeItem): string => String(item.fields.personEmail ?? '');
   const getJobTitle = (item: EmployeeItem): string => String(item.fields.JobTitle ?? '');
   const getPhotoUrl = (item: EmployeeItem): string | undefined => item.fields.personPhotoUrl as string | undefined;
 
-  /* ── unique job titles for filter ── */
+  // Filtreleme için unvanları uniqe listeleme
   const uniqueJobTitles = React.useMemo(() => {
     const titles = data
       .map(item => String(item.fields.JobTitle ?? ''))
@@ -169,7 +169,7 @@ export function EmployeeCards(props: EmployeeCardsProps): React.ReactElement {
     return Array.from(new Set(titles)).sort((a, b) => a.localeCompare(b, 'tr'));
   }, [data]);
 
-  /* ── search + filter ── */
+  // Arama ve filtreleme mantığı
   const matchesSearch = (item: EmployeeItem): boolean => {
     if (!search.trim()) return true;
     const q = search.toLowerCase();
@@ -183,7 +183,7 @@ export function EmployeeCards(props: EmployeeCardsProps): React.ReactElement {
     ? filteredBySearch
     : filteredBySearch.filter(item => getJobTitle(item) === jobTitleFilter);
 
-  /* ── profile fetch ── */
+  // Graph API üzerinden profil verilerini çekme
   const fetchUserProfile = React.useCallback(
     async (personLookupId: number | string): Promise<void> => {
       if (!webAbsoluteUrl || !spHttpClient || !getAccessToken) return;
@@ -218,7 +218,7 @@ export function EmployeeCards(props: EmployeeCardsProps): React.ReactElement {
         setProfile(profileData);
         const profileRootOrigin = new URL(webAbsoluteUrl).origin;
         const profileUrl = `${profileRootOrigin}/_layouts/15/userphoto.aspx?size=L&accountname=${encodeURIComponent(upn)}`;
-        // Debug: dialog için profil foto URL'si
+        // Dialog için profil foto URL'sini kontrol edelim
         // eslint-disable-next-line no-console
         console.log('[EmployeeCards] profile dialog photo', { upn, profileUrl });
         setProfilePhoto(profileUrl);
@@ -243,7 +243,7 @@ export function EmployeeCards(props: EmployeeCardsProps): React.ReactElement {
     }
   };
 
-  /* ── render ── */
+  // Bileşen render'ı
   if (loading) {
     return (
       <Theme appearance="light" accentColor="violet" radius="large" hasBackground={false} style={{ background: 'transparent', minHeight: 'auto' }}>
@@ -264,7 +264,7 @@ export function EmployeeCards(props: EmployeeCardsProps): React.ReactElement {
       <SpErrorBoundary onAuthError={() => alert('Graph API Yetki Hatası!')}>
         <Flex direction="column" gap="5">
 
-          {/* ── SEARCH + FILTER ── */}
+          {/* Search ve Filtreler */}
           <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 16 }}>
             <div style={{ position: 'relative', flex: 1 }}>
               <div style={{
@@ -342,7 +342,7 @@ export function EmployeeCards(props: EmployeeCardsProps): React.ReactElement {
             </div>
           </div>
 
-          {/* ── HEADER ── */}
+          {/* Tablo Başlıkları */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: '36px 44px 1fr 1fr 72px',
@@ -358,7 +358,7 @@ export function EmployeeCards(props: EmployeeCardsProps): React.ReactElement {
             <span />
           </div>
 
-          {/* ── LIST ── */}
+          {/* Liste İçeriği */}
           {filteredData.length === 0 ? (
             <Flex align="center" justify="center" py="8">
               <Text style={{ color: 'rgba(255,255,255,0.4)' }} size="3">Sonuç bulunamadı</Text>
@@ -454,14 +454,14 @@ export function EmployeeCards(props: EmployeeCardsProps): React.ReactElement {
             </Box>
           )}
 
-          {/* ── FOOTER ── */}
+          {/* Alt Kısım (Footer) */}
           <Flex justify="end" px="2" style={{ marginTop: 8 }}>
             <Text size="1" style={{ color: '#94a3b8' }}>
               {filteredData.length} / {data.length} kişi gösteriliyor
             </Text>
           </Flex>
 
-          {/* ── PROFILE MODAL ── */}
+          {/* Profil Modalı */}
           <EmployeeProfileModal
             open={profileOpen}
             onOpenChange={(open) => { setProfileOpen(open); if (!open) setProfilePhoto(undefined); }}

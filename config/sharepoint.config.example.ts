@@ -1,7 +1,7 @@
 import type { SpKitConfig } from '@mustafaaksoy41/sharepoint-kit';
 
 const config: SpKitConfig = {
-  // --- TEMEL BİLGİLER & BAĞLANTI ---
+  // Genel bağlantı ayarları
   // Uygulamanın çalışması için gereken temel ortam değişkenleri
   siteId: process.env.SHAREPOINT_SITE_ID || 'root',
   tenantId: process.env.SHAREPOINT_TENANT_ID,
@@ -9,8 +9,7 @@ const config: SpKitConfig = {
   clientSecret: process.env.SHAREPOINT_CLIENT_SECRET,
   defaultStrategy: 'interactive',
 
-  // --- 1. BELGELER ve ŞABLONLAR (Content Types) ---
-  // Doküman kütüphaneleri veya özel form şablonları için kullanılır
+  // Doküman kütüphaneleri - Content Types
   contentTypes: [
     {
       listId: process.env.SHAREPOINT_INVOICE_LIST_ID || '', // Örnek Belge
@@ -19,8 +18,7 @@ const config: SpKitConfig = {
     }
   ],
 
-  // --- 2. DOĞRUDAN LİSTELER (Lists) ---
-  // İçerisinde herhangi bir özel Content Type barındırmayan, düz tablolar için kullanılır
+  // Doğrudan Liste tanımlamaları - Content types barındırmayan normal listeler
   lists: [
     {
       listId: process.env.SHAREPOINT_EMPLOYEE_LIST_ID || '', // Doğrudan Listenin ID'si
@@ -28,12 +26,11 @@ const config: SpKitConfig = {
     }
   ],
 
-  // --- ÇIKTI VE HARİTALAMA AYARLARI ---
+  // Çıktı ve Field mapping ayarları
   options: {
     outputDir: './src/models',
     
-    // SharePoint'in arka plandaki bozuk veya boşluklu Türkçe kolon isimlerini
-    // kod tarafında düzgün (camelCase) okumak için kullanılır
+    // Type hatalarını önlemek için SharePoint isimlerindeki boşluk/Türkçe karakter vs. haritalaması
     fieldNameMapping: {
       'JobTitle': 'jobTitle',
       'Title': 'title',

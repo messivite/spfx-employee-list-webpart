@@ -94,5 +94,5 @@ This will allow developers to simply `npm install @mustafaaksoy41/spfx-employees
 ---
 
 <div align="center">
-  <i>Developed with ❤️ by <a href="https://github.com/mustafaaksoy41">Mustafa Aksoy</a></i>
+  <i>Developed with ❤️ by <a href="https://github.com/messivite">Mustafa Aksoy</a></i>
 </div>
