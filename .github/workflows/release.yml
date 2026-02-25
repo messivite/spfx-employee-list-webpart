@@ -1,0 +1,53 @@
+name: Release SPFx Solution
+
+on:
+  # 1. Automatic trigger: when pushing a tag like "v1.0.0"
+  push:
+    tags:
+      - 'v*'
+  # 2. Manual trigger from GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed for creating a release
+  
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22' # Matching package.json engines requirement
+
+      - name: Get Version from package.json
+        id: package-version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Extracted version: $VERSION"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build SPFx Solution
+        # Runs heft test, clean, package-solution etc.
+        run: npm run build
+
+      - name: Verify .sppkg file exists
+        run: ls -la sharepoint/solution/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}', env.VERSION) }}
+          name: Release ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}', env.VERSION) }}
+          draft: false
+          prerelease: false
+          files: |
+            sharepoint/solution/*.sppkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
