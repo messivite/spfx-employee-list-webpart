@@ -1,0 +1,10 @@
+{
+  "extends": "./node_modules/@microsoft/spfx-web-build-rig/profiles/default/tsconfig-base.json",
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "paths": {
+      "react/jsx-runtime": ["./node_modules/react/jsx-runtime.js"],
+      "react/jsx-dev-runtime": ["./node_modules/react/jsx-dev-runtime.js"]
+    }
+  }
+}

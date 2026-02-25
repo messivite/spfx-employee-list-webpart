@@ -1,0 +1,19 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "useGulp": false,
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "18.19.0",
+    "sdksVersions": {},
+    "version": "1.22.2",
+    "libraryName": "spfx-employees-list",
+    "libraryId": "37403031-b81d-4ac3-a886-790a04f5c889",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "spfx-employees-list",
+    "solutionShortDescription": "spfx-employees-list description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
