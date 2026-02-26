@@ -65,7 +65,7 @@ jobs:
           SP_CATALOG_URL: ${{ secrets.SP_CATALOG_URL }} # Örn: https://mustafaaksoy.sharepoint.com/sites/appcatalog
           SP_APP_ID: ${{ secrets.SP_CLIENT_ID }}        # Azure AD App Registration (Client ID)
           SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}     # Azure AD Tenant ID
-          SP_APP_SECRET: ${{ secrets.SP_CLIENT_SECRET }}# Azure AD Secret
+          SP_APP_SECRET: ${{ secrets.SP_CLIENT_SECRET }} # Azure AD Secret
         run: |
           npm install -g @pnp/cli-microsoft365
           
