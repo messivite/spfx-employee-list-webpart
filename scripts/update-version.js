@@ -29,4 +29,4 @@ if (solutionConfig.solution.features && solutionConfig.solution.features.length 
 // 5. Dosyayı yeniden yaz formatlı bir şekilde kaydet
 fs.writeFileSync(solutionConfigPath, JSON.stringify(solutionConfig, null, 2), 'utf8');
 
-console.log(`✅ config/package-solution.json sürümü '${spfxVersion}' olarak eşitlendi!`);
+console.log(`✅ config/package-solution.json version '${spfxVersion}' data is persist project!`);
