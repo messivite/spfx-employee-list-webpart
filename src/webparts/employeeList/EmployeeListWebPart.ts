@@ -4,8 +4,11 @@ import { Version } from '@microsoft/sp-core-library';
 import {
   type IPropertyPaneConfiguration,
   PropertyPaneTextField,
-  PropertyPaneSlider
+  PropertyPaneSlider,
+  PropertyPaneDropdown,
+  type IPropertyPaneDropdownOption
 } from '@microsoft/sp-property-pane';
+import { SPHttpClient } from '@microsoft/sp-http';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
@@ -23,6 +26,7 @@ export default class EmployeeListWebPart extends BaseClientSideWebPart<IEmployee
 
   private _isDarkTheme: boolean = false;
   private _environmentMessage: string = '';
+  private _listOptions: IPropertyPaneDropdownOption[] = [];
 
   public render(): void {
     const element: React.ReactElement<IEmployeeListProps> = React.createElement(
@@ -48,9 +52,30 @@ export default class EmployeeListWebPart extends BaseClientSideWebPart<IEmployee
   }
 
   protected onInit(): Promise<void> {
-    return this._getEnvironmentMessage().then(message => {
+    return Promise.all([
+      this._getEnvironmentMessage(),
+      this._fetchLists()
+    ]).then(([message]) => {
       this._environmentMessage = message;
     });
+  }
+
+  private async _fetchLists(): Promise<void> {
+    try {
+      const response = await this.context.spHttpClient.get(
+        `${this.context.pageContext.web.absoluteUrl}/_api/web/lists?$select=Id,Title&$filter=Hidden eq false`,
+        SPHttpClient.configurations.v1
+      );
+      if (response.ok) {
+        const data = await response.json();
+        this._listOptions = data.value.map((list: { Id: string; Title: string }) => ({
+          key: list.Id,
+          text: list.Title
+        }));
+      }
+    } catch (e) {
+      console.error('Failed to fetch lists', e);
+    }
   }
 
 
@@ -122,9 +147,10 @@ export default class EmployeeListWebPart extends BaseClientSideWebPart<IEmployee
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
                 }),
-                PropertyPaneTextField('listNameOrId', {
-                  label: strings.ListNameOrIdFieldLabel,
-                  description: strings.ListNameOrIdFieldDescription
+                PropertyPaneDropdown('listNameOrId', {
+                  label: "Çalışanların Çekileceği Liste (SharePoint)",
+                  options: this._listOptions,
+                  selectedKey: this.properties.listNameOrId
                 }),
                 PropertyPaneSlider('recordCount', {
                   label: strings.RecordCountFieldLabel,
