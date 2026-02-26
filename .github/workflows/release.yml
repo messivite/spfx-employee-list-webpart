@@ -58,22 +58,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Otomatik SharePoint Dağıtımı (Deploy)
+      - name: Deploy to SharePoint App Catalog
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'true' }}
         env:
-          # GitHub Repo Settings -> Secrets and variables -> Actions kısmına şu 4 değeri eklemelisin:
-          SP_CATALOG_URL: ${{ secrets.SP_CATALOG_URL }} # Örn: https://mustafaaksoy.sharepoint.com/sites/appcatalog
-          SP_APP_ID: ${{ secrets.SP_CLIENT_ID }}        # Azure AD App Registration (Client ID)
-          SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}     # Azure AD Tenant ID
-          SP_CERT_BASE64: ${{ secrets.SP_CERTIFICATE_BASE64 }} # Base64 Encoded PFX Certificate
+          SP_CATALOG_URL: ${{ secrets.SP_CATALOG_URL }}
+          SP_APP_ID: ${{ secrets.SP_CLIENT_ID }}
+          SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
+          SP_CERT_BASE64: ${{ secrets.SP_CERTIFICATE_BASE64 }}
         run: |
           npm install -g @pnp/cli-microsoft365
           
-          # 1. M365 CLI Login (Sertifika ve Parola ile %100 SharePoint Uyumluluğu)
+          # 1. Login to M365 via Certificate Auth
           m365 login --authType certificate --certificateBase64Encoded "$SP_CERT_BASE64" --password "password" --appId "$SP_APP_ID" --tenant "$SP_TENANT_ID"
           
-          # 2. Paketi (sppkg) SharePoint Uygulama Kataloğuna Yükle (Eskisinin Üzerine Yaz - Overwrite)
+          # 2. Add package to App Catalog
           m365 spo app add --filePath sharepoint/solution/spfx-employees-list.sppkg --appCatalogUrl "$SP_CATALOG_URL" --overwrite
           
-          # 3. Tüm Sitelere Dağıt / Etkinleştir (Deploy)
+          # 3. Deploy app to all sites
           m365 spo app deploy --name "spfx-employees-list.sppkg" --appCatalogUrl "$SP_CATALOG_URL" --skipFeatureDeployment
