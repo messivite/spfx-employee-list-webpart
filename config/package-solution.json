@@ -3,7 +3,7 @@
   "solution": {
     "name": "spfx-employees-list-client-side-solution",
     "id": "37403031-b81d-4ac3-a886-790a04f5c889",
-    "version": "1.0.4.0",
+    "version": "1.0.5.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
@@ -30,7 +30,7 @@
         "title": "spfx-employees-list Feature",
         "description": "The feature that activates elements of the spfx-employees-list solution.",
         "id": "4e0322d1-9e17-4083-9171-5f437b6ed228",
-        "version": "1.0.4.0"
+        "version": "1.0.5.0"
       }
     ]
   },
