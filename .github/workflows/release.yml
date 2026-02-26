@@ -70,10 +70,10 @@ jobs:
           npm install -g @pnp/cli-microsoft365
           
           # 1. M365 CLI Login (App Registration - Secret Auth / MFA Sorununu Çözer)
-          m365 login --authType secret --appId $SP_APP_ID --secret $SP_APP_SECRET --tenant $SP_TENANT_ID
+          m365 login --authType secret --appId "$SP_APP_ID" --secret "$SP_APP_SECRET" --tenant "$SP_TENANT_ID"
           
           # 2. Paketi (sppkg) SharePoint Uygulama Kataloğuna Yükle (Eskisinin Üzerine Yaz - Overwrite)
-          m365 spo app add --filePath sharepoint/solution/spfx-employees-list.sppkg --appCatalogUrl $SP_CATALOG_URL --overwrite
+          m365 spo app add --filePath sharepoint/solution/spfx-employees-list.sppkg --appCatalogUrl "$SP_CATALOG_URL" --overwrite
           
           # 3. Tüm Sitelere Dağıt / Etkinleştir (Deploy)
-          m365 spo app deploy --name "spfx-employees-list.sppkg" --appCatalogUrl $SP_CATALOG_URL --skipFeatureDeployment
+          m365 spo app deploy --name "spfx-employees-list.sppkg" --appCatalogUrl "$SP_CATALOG_URL" --skipFeatureDeployment
