@@ -10,7 +10,8 @@
     "start": "heft start --clean",
     "clean": "heft clean",
     "eject-webpack": "heft eject-webpack",
-    "postinstall": "node scripts/postinstall.js"
+    "postinstall": "node scripts/postinstall.js",
+    "version": "node scripts/update-version.js && git add config/package-solution.json"
   },
   "dependencies": {
     "@fluentui/react": "^8.106.4",
