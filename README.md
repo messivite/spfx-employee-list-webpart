@@ -98,19 +98,44 @@ It handles everything from **smart version bumping** (`package-solution.json` sy
    - It securely logs into Microsoft 365 using Azure AD Application permissions (`Sites.FullControl.All`).
    - It automatically uploads and deploys the generated `.sppkg` package to all sites in your tenant, overwriting the old version.
 
-### Azure AD Setup Requirements
-To use the automated deployment, you must create a new App Registration in Azure Portal and grant it **Application Permissions** for `SharePoint -> Sites.FullControl.All` (along with Admin Consent). 
-Then, configure the `Manifest` of the app:
+### 1. Smart Versioning Setup
+I bound the `package-solution.json` version sync process to NPM's native versioning command. Before committing your release:
+```bash
+# This will update package.json, sync package-solution.json to match, and stage the files
+npm version patch # or minor, or major
+git push origin main --follow-tags
+```
+
+### 2. Authentication: Generating a Certificate
+To bypass MFA and securely authenticate GitHub Actions with the SharePoint admin center, M365 CLI requires Certificate Auth. 
+You can generate one locally using OpenSSL:
+```bash
+# 1. Generate the Certificate and Private Key
+openssl req -x509 -newkey rsa:2048 -keyout github-deploy.key -out github-deploy.cer -days 3650 -nodes -subj "/CN=GitHubDeployBot"
+
+# 2. Package them into a secure .pfx file (Make sure to use 'password' as the export password when prompted, as the GitHub Action expects it!)
+openssl pkcs12 -export -out github-deploy.pfx -inkey github-deploy.key -in github-deploy.cer -passout pass:password
+
+# 3. Convert the .pfx to Base64 format for GitHub
+base64 -i github-deploy.pfx -o github-deploy.txt
+```
+
+### 3. Azure AD Setup Requirements
+To grant the GitHub Action permissions to deploy, you must create a new App Registration in Azure Portal and:
+1. Grant it **Application Permissions** for `SharePoint -> Sites.FullControl.All` (along with Admin Consent). 
+2. Go to **Certificates & secrets -> Certificates** and upload the `github-deploy.cer` file you generated.
+3. Lastly, configure the `Manifest` of the app to allow CLI client auth:
 ```json
 "allowPublicClient": true,
 "isFallbackPublicClient": true
 ```
 
-Finally, add these 4 Repository Secrets in GitHub (`Settings > Secrets and variables > Actions`):
-- `SP_CATALOG_URL` (e.g. `https://yourtenant.sharepoint.com/sites/appcatalog`)
-- `SP_CLIENT_ID` (Azure App ID)
-- `SP_TENANT_ID` (Azure Tenant ID)
-- `SP_CERTIFICATE_BASE64` (Base64 Encoded Exported .pfx Certificate).
+### 4. GitHub Repository Secrets
+Finally, navigate to your GitHub Repository -> `Settings > Secrets and variables > Actions` and add these 4 Repository Secrets:
+- `SP_CATALOG_URL`: Your App Catalog URL (e.g. `https://yourtenant.sharepoint.com/sites/appcatalog`)
+- `SP_CLIENT_ID`: The Azure App Registration (Client ID)
+- `SP_TENANT_ID`: The Azure Directory (Tenant ID)
+- `SP_CERTIFICATE_BASE64`: Open your generated `github-deploy.txt` file, copy all the string content, and paste it here!
 
 ---
 
