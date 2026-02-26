@@ -16,6 +16,6 @@ define([], function() {
     "AppOutlookEnvironment": "Uygulama Outlook'ta çalışıyor",
     "UnknownEnvironment": "Uygulama bilinmeyen bir ortamda çalışıyor",
     "WelcomeText": "Hoş geldin, ",
-    "TeamMembersTitle": "Ekip Üyeleri"
+    "TeamMembersTitle": "Ekip Üyeleri 🚀"
   }
 });
