@@ -7,6 +7,12 @@ on:
       - 'v*'
   # 2. Manual trigger from GitHub Actions tab
   workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Oluşturulan Paketi (sppkg) Otomatik Olarak SharePoint.e Yükle ve Sitelere Dağıt (Deploy)'
+        required: true
+        type: boolean
+        default: false
 
 jobs:
   build-and-release:
@@ -51,3 +57,22 @@ jobs:
             sharepoint/solution/*.sppkg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Otomatik SharePoint Dağıtımı (Deploy)
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'true' }}
+        env:
+          # GitHub Repo Settings -> Secrets and variables -> Actions kısmına şu 3 değeri eklemelisin:
+          SP_CATALOG_URL: ${{ secrets.SP_CATALOG_URL }} # Örn: https://mustafaaksoy.sharepoint.com/sites/appcatalog
+          USERNAME: ${{ secrets.SP_ADMIN_USERNAME }}    # Örn: admin@mustafaaksoy.onmicrosoft.com
+          PASSWORD: ${{ secrets.SP_ADMIN_PASSWORD }}    # Admin Şifresi
+        run: |
+          npm install -g @pnp/cli-microsoft365
+          
+          # 1. M365 CLI Login (Eğer MFA / İki Adımlı Doğrulama varsa App Registration - Secret kullanılmalıdır)
+          m365 login --username $USERNAME --password $PASSWORD
+          
+          # 2. Paketi (sppkg) SharePoint Uygulama Kataloğuna Yükle (Eskisinin Üzerine Yaz - Overwrite)
+          m365 spo app add --filePath sharepoint/solution/spfx-employees-list.sppkg --appCatalogUrl $SP_CATALOG_URL --overwrite
+          
+          # 3. Tüm Sitelere Dağıt / Etkinleştir (Deploy)
+          m365 spo app deploy --name "spfx-employees-list.sppkg" --appCatalogUrl $SP_CATALOG_URL --skipFeatureDeployment
