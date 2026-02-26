@@ -65,12 +65,12 @@ jobs:
           SP_CATALOG_URL: ${{ secrets.SP_CATALOG_URL }} # Örn: https://mustafaaksoy.sharepoint.com/sites/appcatalog
           SP_APP_ID: ${{ secrets.SP_CLIENT_ID }}        # Azure AD App Registration (Client ID)
           SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}     # Azure AD Tenant ID
-          SP_APP_SECRET: ${{ secrets.SP_CLIENT_SECRET }} # Azure AD Secret
+          SP_CERT_BASE64: ${{ secrets.SP_CERTIFICATE_BASE64 }} # Base64 Encoded PFX Certificate
         run: |
           npm install -g @pnp/cli-microsoft365
           
-          # 1. M365 CLI Login (App Registration - Secret Auth / MFA Sorununu Çözer)
-          m365 login --authType secret --appId "$SP_APP_ID" --secret "$SP_APP_SECRET" --tenant "$SP_TENANT_ID"
+          # 1. M365 CLI Login (Sertifika ile %100 SharePoint Uyumluluğu)
+          m365 login --authType certificate --certificateBase64Encoded "$SP_CERT_BASE64" --appId "$SP_APP_ID" --tenant "$SP_TENANT_ID"
           
           # 2. Paketi (sppkg) SharePoint Uygulama Kataloğuna Yükle (Eskisinin Üzerine Yaz - Overwrite)
           m365 spo app add --filePath sharepoint/solution/spfx-employees-list.sppkg --appCatalogUrl "$SP_CATALOG_URL" --overwrite
