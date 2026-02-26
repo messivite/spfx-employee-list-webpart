@@ -14,6 +14,8 @@ declare interface IEmployeeListWebPartStrings {
   AppOfficeEnvironment: string;
   AppOutlookEnvironment: string;
   UnknownEnvironment: string;
+  WelcomeText: string;
+  TeamMembersTitle: string;
 }
 
 declare module 'EmployeeListWebPartStrings' {

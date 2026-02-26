@@ -7,6 +7,7 @@ import { SpProvider, SpErrorBoundary } from '@mustafaaksoy41/sharepoint-kit/comp
 import { motion } from 'framer-motion';
 import { EmployeeCards } from './EmployeeCards';
 import { PersonIcon } from '@radix-ui/react-icons';
+import * as strings from 'EmployeeListWebPartStrings';
 
 const DEFAULT_LIST_ID = '7b906718-e108-42ac-92df-999e1c6e6e65';
 
@@ -55,12 +56,12 @@ export default class EmployeeList extends React.Component<IEmployeeListProps> {
                     margin: 0, fontSize: 20, fontWeight: 700,
                     color: '#0f172a', letterSpacing: '-0.3px', lineHeight: 1.3
                   }}>
-                    Ekip Üyeleri
+                    {strings.TeamMembersTitle}
                   </h2>
                   <p style={{
                     margin: 0, color: '#6b7280', fontSize: 13
                   }}>
-                    Hoş geldin, <strong style={{ color: '#111827' }}>{escape(userDisplayName)}</strong>
+                    {strings.WelcomeText}<strong style={{ color: '#111827' }}>{escape(userDisplayName)}</strong>
                   </p>
                 </div>
               </div>
