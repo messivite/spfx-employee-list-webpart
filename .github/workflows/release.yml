@@ -69,8 +69,8 @@ jobs:
         run: |
           npm install -g @pnp/cli-microsoft365
           
-          # 1. M365 CLI Login (Sertifika ile %100 SharePoint Uyumluluğu)
-          m365 login --authType certificate --certificateBase64Encoded "$SP_CERT_BASE64" --appId "$SP_APP_ID" --tenant "$SP_TENANT_ID"
+          # 1. M365 CLI Login (Sertifika ve Parola ile %100 SharePoint Uyumluluğu)
+          m365 login --authType certificate --certificateBase64Encoded "$SP_CERT_BASE64" --password "password" --appId "$SP_APP_ID" --tenant "$SP_TENANT_ID"
           
           # 2. Paketi (sppkg) SharePoint Uygulama Kataloğuna Yükle (Eskisinin Üzerine Yaz - Overwrite)
           m365 spo app add --filePath sharepoint/solution/spfx-employees-list.sppkg --appCatalogUrl "$SP_CATALOG_URL" --overwrite
