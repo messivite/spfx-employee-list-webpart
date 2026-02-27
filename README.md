@@ -24,6 +24,13 @@
 
 ---
 
+## 🎮 Video Demo & Installation Walkthrough
+Watch the full setup, deployment, and live usage of this web part here:
+
+[![SPFx Employees List Demo & Setup](https://img.youtube.com/vi/5vQEQztKiWg/maxresdefault.jpg)](https://youtu.be/5vQEQztKiWg)
+
+---
+
 ## ⚛️ React 18 Compatibility
 
 Although Microsoft's default SPFx generators still often tie you down to React 16 or 17 setups, this project has been carefully configured to be fully compatible with the modern **React 18** ecosystem. 
